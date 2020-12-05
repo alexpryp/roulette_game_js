@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const concat = require('gulp-concat');
 const autoprefixer = require('gulp-autoprefixer');
 const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
 
 function htmls() {
     return gulp.src('./src/index.html')
@@ -22,7 +23,8 @@ function scripts() {
 				.pipe(concat('script.js'))
 				.pipe(babel({
 		            presets: ['@babel/env']
-		        }))
+                }))
+                .pipe(uglify())
 				.pipe(gulp.dest('./build/js'));
 }
 
