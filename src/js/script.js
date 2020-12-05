@@ -31,7 +31,10 @@ let accountState = {
 };
 
 //Add the canvas that Pixi automatically created and added to HTML document
-document.querySelector('#game').appendChild(app.view);
+let loadingMessage = document.querySelector('#loading-message');
+let gameContainer = document.querySelector('#game');
+gameContainer.removeChild(loadingMessage);
+gameContainer.appendChild(app.view);
 
 //load a JSON file with texture atlas and run the `setup` function when it's done
 loader

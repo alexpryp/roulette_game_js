@@ -3,7 +3,7 @@ function setup() {
     //frame id textures.
     id = resources["../textures/gameTextures.json"].textures;
 
-    //Make the background using the alias
+    //Make the background
     background = new Sprite(id["BG.png"]);
     //Position the background
     background.position.set(0, 0);

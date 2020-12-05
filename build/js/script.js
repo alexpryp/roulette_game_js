@@ -27,7 +27,10 @@ var accountState = {
   wonPerGame: 0
 }; //Add the canvas that Pixi automatically created and added to HTML document
 
-document.querySelector('#game').appendChild(app.view); //load a JSON file with texture atlas and run the `setup` function when it's done
+var loadingMessage = document.querySelector('#loading-message');
+var gameContainer = document.querySelector('#game');
+gameContainer.removeChild(loadingMessage);
+gameContainer.appendChild(app.view); //load a JSON file with texture atlas and run the `setup` function when it's done
 
 loader.add("../textures/gameTextures.json").on("progress", loadProgressHandler).load(setup);
 
@@ -60,7 +63,7 @@ var betLine,
 function setup() {
   //Create an optional alias called `id` for all the texture atlas 
   //frame id textures.
-  id = resources["../textures/gameTextures.json"].textures; //Make the background using the alias
+  id = resources["../textures/gameTextures.json"].textures; //Make the background
 
   background = new Sprite(id["BG.png"]); //Position the background
 

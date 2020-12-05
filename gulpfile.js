@@ -1,9 +1,6 @@
 const gulp = require('gulp');
 const concat = require('gulp-concat');
-//const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
-//const cssmin = require('gulp-cssmin');
-//const del = require('del');
 const babel = require('gulp-babel');
 
 function htmls() {
@@ -33,10 +30,6 @@ function watch() {
     gulp.watch('./src/*.html', htmls);
 	gulp.watch('./src/css/**/*.css', styles);
 	gulp.watch('./src/js/**/*.js', scripts);
-}
-
-function clean() {
-	return del(['./*.css', './script.js']);
 }
 
 gulp.task('htmls', htmls);
