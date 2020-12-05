@@ -25,6 +25,10 @@ let resultMatrix = [
     ["SYM3.png", "SYM5.png", "SYM1.png"],
     ["SYM4.png", "SYM7.png", "SYM6.png"],
 ];
+let accountState = {
+    totalAmount: 100,
+    wonPerGame: 0
+};
 
 //Add the canvas that Pixi automatically created and added to HTML document
 document.querySelector('#game').appendChild(app.view);
@@ -56,7 +60,11 @@ let betLine,
     container1, 
     container2, 
     loopCounter,
+    styleCashMessage,
+    cashMessageContainer,
+    cashMessage,
     gameWinScene,
+    cashMessageRectangle,
     timerID;
 
 loopCounter = 0;
@@ -92,6 +100,32 @@ function setup() {
 
     betLine = new Sprite(id["Bet_Line.png"]);
     betLine.position.set(40, 268);
+
+    //Displaying info about the state of the cash account
+    styleCashMessage = new PIXI.TextStyle({
+        fontFamily: "Arial",
+        fontSize: 20,
+        fill: "yellow",
+        align: "left",
+    });
+
+    cashMessage = new PIXI.Text(
+        `MONEY: $${accountState.totalAmount}\nWIN: ${accountState.wonPerGame}`,
+        styleCashMessage);
+    cashMessage.x = 810;
+    cashMessage.y = 360;
+    cashMessageContainer = new PIXI.Container();
+    cashMessageContainer.width = 150;
+    cashMessageContainer.height = 100;
+
+    cashMessageRectangle = new PIXI.Graphics();
+    cashMessageRectangle.beginFill(0x175E69, 1);
+    cashMessageRectangle.x = 800;
+    cashMessageRectangle.y = 350;
+    cashMessageRectangle.drawRect(0, 0, 150, 100);
+    cashMessageContainer.addChild(cashMessageRectangle)
+    cashMessageContainer.addChild(cashMessage);
+    app.stage.addChild(cashMessageContainer);
 
     //Create a win message
     let style = new PIXI.TextStyle({
@@ -132,10 +166,22 @@ function setup() {
     app.ticker.add(() => gameLoop());
 }
 
+function updateCashMessage() {
+    cashMessageContainer.removeChild(cashMessage);
+    cashMessage = new PIXI.Text(
+        `MONEY: $${accountState.totalAmount}\nWIN: ${accountState.wonPerGame}`,
+        styleCashMessage);
+    cashMessage.x = 810;
+    cashMessage.y = 360;
+    cashMessageContainer.addChild(cashMessage);
+}
+
 //Game launch button handler
 function playGameHandler() {
     app.stage.removeChild(betLine);
     app.stage.removeChild(gameWinScene);
+    accountState.totalAmount -= 5;
+    updateCashMessage();
     state = play;
 }
 
@@ -158,15 +204,17 @@ function play(delta) {
         if (checkWin( resultMatrix )) {
             app.stage.addChild(betLine);
             app.stage.addChild(gameWinScene);
+            accountState.totalAmount += 10;
+            accountState.wonPerGame += 1;
+            updateCashMessage();
             timerID = setTimeout(()=>{
                 app.stage.removeChild(gameWinScene);
             }, 3000)
-            console.log("WIN");
-        } else {
-            console.log("LOSS");
         }
 
-        btnSpin.visible = true;
+        if(accountState.totalAmount > 4) {
+            btnSpin.visible = true;
+        }
 
         return;
     }
