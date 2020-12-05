@@ -26,13 +26,18 @@ let resultMatrix = [
     ["SYM4.png", "SYM7.png", "SYM6.png"],
 ];
 
-//Add the canvas that Pixi automatically created for you to the HTML document
+//Add the canvas that Pixi automatically created and added to HTML document
 document.querySelector('#game').appendChild(app.view);
 
 //load a JSON file with texture atlas and run the `setup` function when it's done
 loader
     .add("../textures/gameTextures.json")
+    .on("progress", loadProgressHandler)
     .load(setup);
+
+function loadProgressHandler() {
+
+}
 
 //Define variables that might be used in more 
 //than one function
@@ -46,7 +51,8 @@ let betLine,
     sym5, 
     sym6, 
     sym7, 
-    id, 
+    id,
+    state,
     container1, 
     container2, 
     loopCounter,
@@ -66,6 +72,7 @@ function setup() {
     background.position.set(0, 0);
     app.stage.addChild(background);
 
+    //Make and position some other sprites
     btnSpinD = new Sprite(id["BTN_Spin_d.png"]);
     btnSpinD.position.set(824, 218);
     app.stage.addChild(btnSpinD);
@@ -86,6 +93,7 @@ function setup() {
     betLine = new Sprite(id["Bet_Line.png"]);
     betLine.position.set(40, 268);
 
+    //Create a win message
     let style = new PIXI.TextStyle({
         fontFamily: "Arial",
         fontSize: 120,
@@ -101,13 +109,12 @@ function setup() {
     gameWinScene.height = 336;
 
     let rectangle = new PIXI.Graphics();
-        rectangle.beginFill(0x175E69, 0.9);
-        rectangle.x = 75;
-        rectangle.y = 110;
-        rectangle.drawRect(0, 0, 710, 336);
+    rectangle.beginFill(0x175E69, 0.9);
+    rectangle.x = 75;
+    rectangle.y = 110;
+    rectangle.drawRect(0, 0, 710, 336);
     gameWinScene.addChild(rectangle)
     gameWinScene.addChild(message);
-    //gameWinScene.tint = 0x777777;
     
     //Add sprites to containers
     fillContainer(container1, resultMatrix);
@@ -118,71 +125,77 @@ function setup() {
     app.stage.addChild(container2);
 
     //Game state
-    state = function stop () {};
+    state = stopGame;
 
-    //Game launch button handler
-    function playGameHandler() {
-        app.stage.removeChild(betLine);
-        app.stage.removeChild(gameWinScene);
-        state = play;
-    }
-
-    //Play the game
-    function play(delta) {
-        btnSpin.visible = false;
-
-        if (loopCounter == 4) {
-            loopCounter = 0;
-            container1.y = 0;
-            container2.y = -536;
-            state = stop;
-
-            //changeResultMatrix(resultMatrix);
-            app.stage.removeChild(container1);
-            container1 = createContainer(70, 0, 710, 536);
-            fillContainer(container1, resultMatrix);
-            app.stage.addChild(container1);
-
-            if (checkWin( resultMatrix )) {
-                app.stage.addChild(betLine);
-                app.stage.addChild(gameWinScene);
-                timerID = setTimeout(()=>{
-                    app.stage.removeChild(gameWinScene);
-                }, 3000)
-                console.log("WIN");
-            } else {
-                console.log("LOSS");
-            }
-
-            btnSpin.visible = true;
-
-            return;
-        }
-
-        if (container1.y > 536) {
-            container1.y = -536;
-        }
-        if (container2.y > 536) {
-            container2.y = -536;
-            loopCounter += 1;
-        }
-
-        container1.y += 70;
-        container2.y += 70;
-    }
-
-    //Start the game loop
-    gameLoop();
+    //Call this `gameLoop` function on the next screen refresh
+    //(which happens 60 times per second)
+    app.ticker.add(() => gameLoop());
 }
-  
+
+//Game launch button handler
+function playGameHandler() {
+    app.stage.removeChild(betLine);
+    app.stage.removeChild(gameWinScene);
+    state = play;
+}
+
+//Play the game
+function play(delta) {
+    btnSpin.visible = false;
+
+    if (loopCounter == 4) {
+        loopCounter = 0;
+        container1.y = 0;
+        container2.y = -536;
+        state = stopGame;
+
+        //changeResultMatrix(resultMatrix);
+        app.stage.removeChild(container1);
+        container1 = createContainer(70, 0, 710, 536);
+        fillContainer(container1, resultMatrix);
+        app.stage.addChild(container1);
+
+        if (checkWin( resultMatrix )) {
+            app.stage.addChild(betLine);
+            app.stage.addChild(gameWinScene);
+            timerID = setTimeout(()=>{
+                app.stage.removeChild(gameWinScene);
+            }, 3000)
+            console.log("WIN");
+        } else {
+            console.log("LOSS");
+        }
+
+        btnSpin.visible = true;
+
+        return;
+    }
+
+    if (container1.y > 536) {
+        container1.y = -536;
+    }
+    if (container2.y > 536) {
+        container2.y = -536;
+        loopCounter += 1;
+    }
+
+    container1.y += 70;
+    container2.y += 70;
+}
+
+//Stop game function
+function stopGame() {
+    return;
+}
+
+//Start the game loop
 function gameLoop(delta){
-    requestAnimationFrame(gameLoop);
-    state(delta);
+    state();
 }
 
 //Create container function
 function createContainer(positionX, positionY, width, height) {
-    container = new PIXI.particles.ParticleContainer();
+    let container = new PIXI.particles.ParticleContainer();
     container.position.set(positionX, positionY, width, height);
     container.width = width;
     container.height = height;
