@@ -25,6 +25,11 @@ let resultMatrix = [
     ["SYM3.png", "SYM5.png", "SYM1.png"],
     ["SYM4.png", "SYM7.png", "SYM6.png"],
 ];
+let betLinePositions = [
+    [40, 88],
+    [40, 268],
+    [40, 448]
+];
 let accountState = {
     totalAmount: 100,
     wonPerGame: 0

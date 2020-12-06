@@ -28,7 +28,6 @@ function setup() {
     container1 = createContainer(70, 0, 710, 536);
 
     betLine = new Sprite(id["Bet_Line.png"]);
-    betLine.position.set(40, 268);
 
     //Displaying info about the state of the cash account
     styleCashMessage = new PIXI.TextStyle({

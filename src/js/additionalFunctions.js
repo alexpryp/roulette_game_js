@@ -34,7 +34,9 @@ function play(delta) {
         fillContainer(container1, resultMatrix);
         app.stage.addChild(container1);
 
-        if (checkWin( resultMatrix )) {
+        let winRow = checkWin();
+        if (winRow > -1) {
+            betLine.position.set(betLinePositions[winRow][0], betLinePositions[winRow][1]);
             app.stage.addChild(betLine);
             app.stage.addChild(gameWinScene);
             accountState.totalAmount += 10;
@@ -49,7 +51,6 @@ function play(delta) {
         if(accountState.totalAmount > 4) {
             btnSpin.visible = true;
         }
-
         return;
     }
 
@@ -109,14 +110,25 @@ function randomInt(min, max) {
 }
 
 //Check results function
-function checkWin( resultMatrix ) {
+function checkWin() {
+    for(let rowNumber = 0; rowNumber < 3; rowNumber++) {
+        if (checkWinRow(rowNumber) ) {
+            return rowNumber;
+        }
+    }
+    return -1;
+}
+
+//Check results one row function
+function checkWinRow(rowNumber) {
     let rM = resultMatrix;
-    if ( rM[1][0] === "SYM1.png" && rM[1][0] === rM[1][1] && rM[1][1] === rM[1][2] ) {
+    let rN = rowNumber;
+    if ( rM[rN][0] === "SYM1.png" && rM[rN][0] === rM[rN][1] && rM[rN][1] === rM[rN][2] ) {
         return false;
-    } else if ( rM[1][0] === rM[1][1] && rM[1][1] === rM[1][2] ) {
+    } else if ( rM[rN][0] === rM[rN][1] && rM[rN][1] === rM[rN][2] ) {
         return true;
-    } else if ( rM[1].indexOf("SYM1.png") > -1 ) {
-        if ( rM[1][0] === rM[1][1] || rM[1][1] === rM[1][2] || rM[1][0] === rM[1][2] ) {
+    } else if ( rM[rN].indexOf("SYM1.png") > -1 ) {
+        if ( rM[rN][0] === rM[rN][1] || rM[rN][1] === rM[rN][2] || rM[rN][0] === rM[rN][2] ) {
             return true;
         }
         return false;
