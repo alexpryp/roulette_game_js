@@ -39,7 +39,7 @@ function setup() {
     });
 
     cashMessage = new PIXI.Text(
-        `MONEY: $${accountState.totalAmount}\nWIN: ${accountState.wonPerGame}`,
+        `MONEY: $${accountState.totalAmount}\nWIN: $${accountState.wonPerGame}`,
         styleCashMessage);
     cashMessage.x = 810;
     cashMessage.y = 380;

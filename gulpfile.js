@@ -19,7 +19,7 @@ function styles() {
 }
 
 function scripts() {
-	return gulp.src(['./src/js/script.js', './src/js/setupFunction.js', './src/js/additionalFunctions.js'])
+	return gulp.src(['./src/js/main.js', './src/js/setupFunction.js', './src/js/additionalFunctions.js'])
 				.pipe(concat('script.js'))
 				.pipe(babel({
 		            presets: ['@babel/env']

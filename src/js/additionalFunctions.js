@@ -2,7 +2,7 @@
 function updateCashMessage() {
     cashMessageContainer.removeChild(cashMessage);
     cashMessage = new PIXI.Text(
-        `MONEY: $${accountState.totalAmount}\nWIN: ${accountState.wonPerGame}`,
+        `MONEY: $${accountState.totalAmount}\nWIN: $${accountState.wonPerGame}`,
         styleCashMessage);
     cashMessage.x = 810;
     cashMessage.y = 380;
@@ -38,12 +38,13 @@ function play(delta) {
             app.stage.addChild(betLine);
             app.stage.addChild(gameWinScene);
             accountState.totalAmount += 10;
-            accountState.wonPerGame += 1;
+            accountState.wonPerGame = 10;
             updateCashMessage();
             timerID = setTimeout(()=>{
                 app.stage.removeChild(gameWinScene);
             }, 3000)
         }
+        accountState.wonPerGame = 0;
 
         if(accountState.totalAmount > 4) {
             btnSpin.visible = true;
